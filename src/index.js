@@ -1,6 +1,23 @@
 const {version} = require('../package.json');
 
+class WsInitializationError extends Error {}
+
+function requirePresence(options, property) {
+  if (!options || !options[property]) {
+    throw new WsInitializationError(`Option ${property} is mandatory`);
+  }
+}
 module.exports = class WealthscopeSdk {
+  constructor(opts) {
+    requirePresence(opts, 'wealthscopeFrontendUrl');
+
+    this.opts = Object.assign({
+      // place defaults here
+      width: '500px',
+      height: '500px',
+    }, opts);
+  }
+
   static version() {
     return version;
   }
@@ -9,9 +26,10 @@ module.exports = class WealthscopeSdk {
     this.element = element;
 
     const iframe = document.createElement('iframe');
-    const html = '<body style="color: red;">Hello World</body>';
-    iframe.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
-    element.appendChild(iframe);
+    iframe.src = this.opts.wealthscopeFrontendUrl;
+    iframe.width = this.opts.width;
+    iframe.height = this.opts.height;
+    element.append(iframe);
 
     this.iframe = iframe;
   }

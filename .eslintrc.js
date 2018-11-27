@@ -11,7 +11,8 @@ module.exports = {
 
     "rules": {
         "require-jsdoc": 0,
-        "indent": 2
+        "indent": 2,
+        "comma-dangle": 0
     }
 
 };
