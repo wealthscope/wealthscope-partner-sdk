@@ -33,4 +33,13 @@ module.exports = class WealthscopeSdk {
 
     this.iframe = iframe;
   }
+
+  auth(email, password) {
+    this.iframe.contentWindow
+        .postMessage({
+          type: 'auth',
+          email,
+          password
+        }, this.opts.wealthscopeFrontendUrl);
+  }
 };

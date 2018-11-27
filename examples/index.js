@@ -1,7 +1,6 @@
 import { WealthscopeSdk } from '../lib/index.js';
 
 const div = document.getElementById('out');
-console.log(div);
 
 const ws = new WealthscopeSdk({
     wealthscopeFrontendUrl: 'http://localhost:3001',
@@ -10,3 +9,5 @@ const ws = new WealthscopeSdk({
 });
 
 ws.render(div);
+
+window.ws = ws;

@@ -8,7 +8,22 @@
 </head>
 <body>
     Local server must be running for this to work.
+    <form onsubmit="doLogin(event)">
+        <input type="text" id="email">
+        <input type="password" id="password">
+        <input type="submit" value="Log in">
+    </form>
     <div id="out"></div>
     <script src="bundle.js"></script>
+    <script>
+        function doLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            window.ws.auth(email, password);
+            return false;
+        }
+    </script>
 </body>
 </html>
