@@ -56,7 +56,7 @@ ws.render(document.getElementById('out'));
 const jwtData = generateUserData();
 
 // Log your user into the application. 
-// This will cause the iFrame contents to load the main application.
+// Successful login will load the main application.
 ws.login(jwtData)
 ```
 
@@ -116,3 +116,10 @@ The `ws.login()` function accepts user data in the format of a SHA-512-signed JW
     ]
 }
 ```
+
+The JWT token will be verified on Wealthscope's API. Authentication will be performed based on verification of the JWT via the SHA-512 public key shared by the client with Wealthscope during the registration process.
+
+If authentication is successful, the main application will load inside the iFrame.
+
+An authentication error will be thrown if login fails.
+
