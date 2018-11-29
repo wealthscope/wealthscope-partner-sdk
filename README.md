@@ -38,30 +38,30 @@ If you are using Yarn, you can instead do `yarn add wealthscope-sdk`
 ```javascript
 import { WealthscopeSdk } from 'wealthscope-sdk';
 
+
+// Instantiate WealthscopeSdk. 
+// This does NOT initialize the iFrame.
 // The CLIENT_ID will be provided by Wealthscope
-const CLIENT_ID = "<your CLIENT_ID here>"
-
-// Fetch or generate your user's data. This must be a signed SHA-512 based JWT token.
-const jwtData = generateUserData();
-
-// Instantiate WealthscopeSdk. This does NOT initialize the iFrame automatically.
+const CLIENT_ID = "<your CLIENT_ID here>" 
 const options = {
     clientName: CLIENT_ID
 };
 const ws = new WealthscopeSdk(options);
 
-// Initialize the iFrame. This will render a placeholder page on your 
-// Assuming there's an element `<div id="out" />` in your DOM
-const div = document.getElementById('out');
-ws.render(div);
+// Initialize the iFrame inside the indicated element.
+ws.render(document.getElementById('out'));
 
-// Log your user into the application
+// Fetch or generate your user's data.
+// See Generating User Data section for more information.
+const jwtData = generateUserData();
+
+// Log your user into the application. 
+// This will cause the iFrame contents to load the main application.
 ws.login(jwtData)
 ```
 
 ### Options
 
-* clientEndpoint - The endpoint you are using to authenticate your data. See Integration Requirements section for more details.
 * clientName - Your client name, as provided by Wealthscope. See Integration Requirements section for more details.
 * width - The desired width of the iframe, e.g. "500px" or "50%"
 * height - The desired height of the iframe, e.g. "500px" or "50%"
@@ -73,14 +73,46 @@ The `ws.login()` function accepts user data in the format of a SHA-512-signed JW
 ```javascript
 // Please note, this is subject to change
 {
-    userId: "a unique identifier for your user",
-    securities: [
+    "userId": "a unique identifier for your user",
+    "accounts":
+    [
         {
-            symbol: "RBF9999:CA",
-            exchange: "CMF",
-            securityType: "fund"
+        "account":
+            {
+              "accountId":"123412341234-Margin/Option",
+              "accountValue":104000.25,
+              "cashValue":1234.57
+            },
+        "positions":
+            [
+                {
+                  "ticker": "GOOG",
+                  "shares": 300,
+                  "marketValue":5000.00,
+                  "name":"Alphabet Inc Class C",
+                  "securityType":"Stock"
+                },
+                {
+                  "ticker": "BNS:CA",
+                  "shares": 300,
+                  "marketValue":6000.00,
+                  "name":"Bank of Nova Scotia",
+                  "securityType":"Stock"
+                },
+                ...
+            ]
         },
-        // ...
+        {
+        "account":
+            {
+              ...
+            },
+        "positions":
+            [
+              ...
+            ]
+        },
+        ...          
     ]
 }
 ```
