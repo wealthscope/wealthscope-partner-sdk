@@ -1,6 +1,6 @@
 {
-  "name": "WealthscopeSdk",
-  "version": "1.0.0",
+  "name": "wealthscope-sdk",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
@@ -8,9 +8,7 @@
     "build": "webpack"
   },
   "dependencies": {
-    "babel-loader": "^8.0.4",
-    "eslint-loader": "^2.1.1",
-    "webpack": "^4.26.1"
+
   },
   "devDependencies": {
     "@babel/core": "^7.1.6",
@@ -28,6 +26,9 @@
     "mocha": "^5.2.0",
     "nodemon": "^1.18.7",
     "requirejs": "^2.3.6",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "babel-loader": "^8.0.4",
+    "eslint-loader": "^2.1.1",
+    "webpack": "^4.26.1"
   }
 }
