@@ -17,7 +17,7 @@ Using an iFrame-based JavaScript architecture, the SDK enables client applicatio
 * Easy JavaScript-based configuration
 * Zero-effort iFrame injection during application runtime
 * Complete iFrame management
-* User-level authentication using SHA-512 JWT tokens
+* User-level authentication using RS512 JWT tokens
 * Flexible API-based data integration
 
 ## Installation
@@ -28,25 +28,19 @@ If you are using Yarn, you can instead do `yarn add wealthscope-sdk`
 ## Integration Requirements
 
 1. The client must be registered with Wealthscope.
-1. The client must be able to generate and retrieve a SHA-512-based JWT token. 
+1. The client must be able to generate and retrieve a RS512 JWT token. 
 1. The client must support the latest web browsers, and have JavaScript enabled.
-1. The client must possess a CLIENT_ID. Speak to your Wealthscope contact for more information.
-1. The client must have shared a SHA-512 public key with Wealthscope. Speak to your Wealthscope contact for more information.
+1. The client must possess a partner name. Speak to your Wealthscope contact for more information.
+1. The client must have shared a RSA SHA-512 public key with Wealthscope. Speak to your Wealthscope contact for more information.
 
 ## Javascript Integration example
 
 ```javascript
 import { WealthscopeSdk } from 'wealthscope-sdk';
 
-
 // Instantiate WealthscopeSdk. 
 // This does NOT initialize the iFrame.
-// The CLIENT_ID will be provided by Wealthscope
-const CLIENT_ID = "<your CLIENT_ID here>" 
-const options = {
-    clientName: CLIENT_ID
-};
-const ws = new WealthscopeSdk(options);
+const ws = new WealthscopeSdk();
 
 // Initialize the iFrame inside the indicated element.
 ws.render(document.getElementById('out'));
@@ -57,67 +51,62 @@ const jwtData = generateUserData();
 
 // Log your user into the application. 
 // Successful login will load the main application.
-ws.login(jwtData)
+ws.login(jwtData);
 ```
 
 ### Options
 
-* clientName - Your client name, as provided by Wealthscope. See Integration Requirements section for more details.
 * width - The desired width of the iframe, e.g. "500px" or "50%"
 * height - The desired height of the iframe, e.g. "500px" or "50%"
 
 ### Generating user data
 
-The `ws.login()` function accepts user data in the format of a SHA-512-signed JWT with the following payload shape:
+The `ws.login()` function accepts user data in the format of a RS512 JWT with the following payload shape:
 
 ```javascript
 // Please note, this is subject to change
 {
-    "userId": "a unique identifier for your user",
-    "accounts":
-    [
+    "partner_name": "a unique identifier representing your company",
+    "user_id": "a unique identifier for your user",
+    "accounts": [
         {
-        "account":
-            {
-              "accountId":"123412341234-Margin/Option",
-              "accountValue":104000.25,
-              "cashValue":1234.57
+            "account": {
+                "accountId":"123412341234-Margin/Option",
+                "accountValue":104000.25,
+                "cashValue":1234.57
             },
-        "positions":
-            [
+            "positions": [
                 {
-                  "ticker": "GOOG",
-                  "shares": 300,
-                  "marketValue":5000.00,
-                  "name":"Alphabet Inc Class C",
-                  "securityType":"Stock"
+                    "ticker": "GOOG",
+                    "shares": 300,
+                    "market_value":5000.00,
+                    "name":"Alphabet Inc Class C",
+                    "security_type":"Stock"
                 },
                 {
-                  "ticker": "BNS:CA",
-                  "shares": 300,
-                  "marketValue":6000.00,
-                  "name":"Bank of Nova Scotia",
-                  "securityType":"Stock"
+                    "ticker": "BNS:CA",
+                    "shares": 300,
+                    "market_value":6000.00,
+                    "name":"Bank of Nova Scotia",
+                    "security_type":"Stock"
                 },
                 ...
             ]
         },
         {
-        "account":
-            {
-              ...
+            "account": {
+                ...
             },
-        "positions":
-            [
-              ...
+            "positions": [
+                ...
             ]
         },
-        ...          
+        ...   
     ]
 }
 ```
 
-The JWT token will be verified on Wealthscope's API. Authentication will be performed based on verification of the JWT via the SHA-512 public key shared by the client with Wealthscope during the registration process.
+The JWT token will be verified on Wealthscope's API. Authentication will be performed based on verification of the JWT via the RSA SHA-512 public key shared by the client with Wealthscope during the registration process.
 
 If authentication is successful, the main application will load inside the iFrame.
 

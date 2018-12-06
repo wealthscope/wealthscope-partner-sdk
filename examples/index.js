@@ -1,13 +1,14 @@
-import { WealthscopeSdk } from '../lib/index.js';
+import {WealthscopeSdk} from '../lib/index.js';
 
-const div = document.getElementById('out');
+// Instantiate WealthscopeSdk
+// This does NOT initialize the iFrame
+const options = {
+  width: '1000px',
+  height: '800px'
+};
+const ws = new WealthscopeSdk(options);
 
-const ws = new WealthscopeSdk({
-    wealthscopeFrontendUrl: 'http://localhost:3001',
-    width: '1000px',
-    height: '800px'
-});
-
-ws.render(div);
+// Initialize the iFrame inside the indicated element.
+ws.render(document.getElementById('out'));
 
 window.ws = ws;
