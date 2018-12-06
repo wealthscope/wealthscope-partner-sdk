@@ -45,9 +45,9 @@ const ws = new WealthscopeSdk();
 // Initialize the iFrame inside the indicated element.
 ws.render(document.getElementById('out'));
 
-// Fetch or generate your user's data.
+// Fetch a signed copy of your user's data from your backend.
 // See Generating User Data section for more information.
-const jwtData = generateUserData();
+const jwtData = await generateUserDataFromMyBackend();
 
 // Log your user into the application. 
 // Successful login will load the main application.
