@@ -5,24 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Basic Example</title>
+    <style>
+        .frame-actions { padding: 10px 0px; }
+        .login-form { display: inline-block; }
+        .logout-btn { display: inline-block; }
+    </style>
 </head>
 <body>
-    Local server must be running for this to work.
-    <form onsubmit="doLogin(event)">
-        <input type="text" id="email">
-        <input type="password" id="password">
-        <input type="submit" value="Log in">
-    </form>
+    <div class="frame-actions">
+        Local server must be running for this to work.
+        <form class="login-form" onsubmit="doLogin(event)">
+            <input type="text" id="token">
+            <input type="submit" value="Log in">
+        </form>
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
     <div id="out"></div>
     <script src="bundle.js"></script>
     <script>
         function doLogin(event) {
             event.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            window.ws.auth(email, password);
+            const jwtData = document.getElementById('token').value;
+            
+            // Log your user into the application. 
+            // Successful login will load the main application.
+            window.ws.login(jwtData);
+
             return false;
+        }
+
+        function doLogout() {
+            window.ws.logout();
         }
     </script>
 </body>
