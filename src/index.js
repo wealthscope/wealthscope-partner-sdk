@@ -8,7 +8,7 @@ const {version} = require('../package.json');
 //   }
 // }
 
-module.exports = class WealthscopeSdk {
+export class WealthscopeSdk {
   constructor(opts) {
     this.opts = Object.assign({
       // place defaults here

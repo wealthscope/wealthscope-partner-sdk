@@ -1,15 +1,13 @@
 {
   "name": "wealthscope-partner-sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "build": "webpack"
   },
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.1.6",
     "@babel/preset-env": "^7.1.6",
