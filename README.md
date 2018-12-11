@@ -1,4 +1,4 @@
-# Wealthscope Partner SDK Documentation
+# Wealthscope SDK Documentation
 
 <b style="color: lightgreen">DRAFT DOCUMENTATION</b>
 
@@ -22,8 +22,8 @@ Using an iFrame-based JavaScript architecture, the SDK enables client applicatio
 
 ## Installation
 
-You can install the SDK using the command `npm install --add wealthscope-partner-sdk`.
-If you are using Yarn, you can instead do `yarn add wealthscope-partner-sdk`
+You can install the SDK using the command `npm install --add wealthscope-sdk`.
+If you are using Yarn, you can instead do `yarn add wealthscope-sdk`
 
 ## Integration Requirements
 
@@ -36,7 +36,7 @@ If you are using Yarn, you can instead do `yarn add wealthscope-partner-sdk`
 ## Javascript Integration example
 
 ```javascript
-import { WealthscopeSdk } from 'wealthscope-partner-sdk';
+import { WealthscopeSdk } from 'wealthscope-sdk';
 
 // Instantiate WealthscopeSdk. 
 // This does NOT initialize the iFrame.
@@ -45,9 +45,9 @@ const ws = new WealthscopeSdk();
 // Initialize the iFrame inside the indicated element.
 ws.render(document.getElementById('out'));
 
-// Fetch a signed copy of your user's data from your backend.
+// Fetch or generate your user's data.
 // See Generating User Data section for more information.
-const jwtData = await generateUserDataFromMyBackend();
+const jwtData = generateUserData();
 
 // Log your user into the application. 
 // Successful login will load the main application.
@@ -64,40 +64,29 @@ ws.login(jwtData);
 The `ws.login()` function accepts user data in the format of a RS512 JWT with the following payload shape:
 
 ```javascript
-// Please note, this is subject to change
 {
     "partner_name": "a unique identifier representing your company",
     "user_id": "a unique identifier for your user",
     "accounts": [
         {
-            "account": {
-                "accountId":"123412341234-Margin/Option",
-                "accountValue":104000.25,
-                "cashValue":1234.57
-            },
-            "positions": [
+            "label":"123412341234-Margin/Option", // The account's identifier
+            "balance":104000.25, // The value of the account
+            "cash":1234.57
+            "holdings": [
                 {
-                    "ticker": "GOOG",
-                    "shares": 300,
-                    "market_value":5000.00,
+                    "ticker": "GOOG", // American tickers are as-is, Canadian ones must end with `:CA`
+                    "quantity": 2, // The number of shares
+                    "market_value": 5000.00,
                     "name":"Alphabet Inc Class C",
                     "security_type":"Stock"
                 },
                 {
                     "ticker": "BNS:CA",
-                    "shares": 300,
+                    "quantity": 3,
                     "market_value":6000.00,
                     "name":"Bank of Nova Scotia",
                     "security_type":"Stock"
                 },
-                ...
-            ]
-        },
-        {
-            "account": {
-                ...
-            },
-            "positions": [
                 ...
             ]
         },
