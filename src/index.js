@@ -13,8 +13,8 @@ export class WealthscopeSdk {
     this.opts = Object.assign({
       // place defaults here
       wealthscopeUrl: 'https://bus.wealthscope.ca',
-      width: '500px',
-      height: '500px',
+      width: '100%',
+      height: '100%',
     }, opts);
   }
 
@@ -29,7 +29,7 @@ export class WealthscopeSdk {
     iframe.src = this.opts.wealthscopeUrl;
     iframe.width = this.opts.width;
     iframe.height = this.opts.height;
-    element.append(iframe);
+    element.appendChild(iframe);
 
     this.iframe = iframe;
   }
