@@ -56,8 +56,8 @@ ws.login(jwtData);
 
 ### Options
 
-* width - The desired width of the iframe, e.g. "500px" or "50%"
-* height - The desired height of the iframe, e.g. "500px" or "50%"
+* width - The desired width of the iframe, e.g. "500px" or "50%". Defaults to "100%".
+* height - The desired height of the iframe, e.g. "500px" or "50%". Defaults to "100%".
 
 ### Generating user data
 
