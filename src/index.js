@@ -10,7 +10,16 @@ const {version} = require('../package.json');
 
 export class WealthscopeSdk {
   constructor(opts) {
+    // A queue to hold messages that are to be dispatched
+    this.msgQueue = [];
+
+    // Flag which signifies whether the iFrame is ready
     this.isReady = false;
+
+    // A timeout which holds the next dequeue attempt
+    this.nextDequeueAttempt = null;
+
+    // User options
     this.opts = Object.assign(
         {
         // place defaults here
@@ -51,27 +60,48 @@ export class WealthscopeSdk {
   }
 
   login(jwtData) {
-    const options = {
+    const message = {
       type: 'auth',
       token: jwtData
     };
 
-    if (!this.isReady) {
-      throw new Error('iFrame has not finished loading.');
-    }
-
-    this.iframe.contentWindow.postMessage(options, this.opts.wealthscopeUrl);
+    this._enqueue(message);
   }
 
   logout() {
-    const options = {
+    const message = {
       type: 'logout'
     };
 
-    if (!this.isReady) {
-      throw new Error('iFrame has not finished loading.');
-    }
+    this._enqueue(message);
+  }
 
-    this.iframe.contentWindow.postMessage(options, this.opts.wealthscopeUrl);
+  // Add a message to the queue
+  _enqueue(message) {
+    this.msgQueue.push(message);
+    this._dequeue(); // Attempt to dequeue the message
+  }
+
+  // Attempt to dequeue the entire queue of messages
+  _dequeue() {
+    // Clear the current task, if there is one
+    clearTimeout(this.nextDequeueAttempt);
+    this.nextDequeueAttempt = null;
+
+    if (this.msgQueue.length > 0) {
+      if (this.isReady) {
+        // Dequeue the queue if the iFrame is ready
+        const {contentWindow} = this.iframe;
+        while (this.msgQueue.length > 0) {
+          const message = this.msgQueue.shift();
+          contentWindow.postMessage(message, this.opts.wealthscopeUrl);
+        }
+      } else {
+        // Set a timeout to attempt again in 250ms
+        if (this.nextDequeueAttempt == null) {
+          this.nextDequeueAttempt = setTimeout(this._dequeue.bind(this), 250);
+        }
+      }
+    }
   }
 }

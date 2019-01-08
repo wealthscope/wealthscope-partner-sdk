@@ -43,11 +43,6 @@
       function doLogin(event) {
         event.preventDefault();
 
-        // Check if the SDK is ready
-        if (!window.ws.isReady) {
-          return;
-        }
-
         const jwtData = document.getElementById('token').value;
 
         // Log your user into the application.
@@ -58,10 +53,6 @@
       }
 
       function doLogout() {
-        if (!window.ws.isReady) {
-          return;
-        }
-
         window.ws.logout();
       }
     </script>
