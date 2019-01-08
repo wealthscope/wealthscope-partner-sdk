@@ -101,7 +101,7 @@ export class WealthscopeSdk {
       } else {
         // Set a timeout to attempt again in 250ms
         if (this.nextDequeueAttempt == null) {
-          this.nextDequeueAttempt = setTimeout(this._dequeue.bind(this), 250);
+          this.nextDequeueAttempt = setTimeout(() => this._dequeue(), 250);
         }
       }
     }
