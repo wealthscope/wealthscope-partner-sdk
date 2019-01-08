@@ -8,6 +8,8 @@ const {version} = require('../package.json');
 //   }
 // }
 
+const SDK_READY = 'SDK_READY';
+
 export class WealthscopeSdk {
   constructor(opts) {
     // A queue to hold messages that are to be dispatched
@@ -51,7 +53,7 @@ export class WealthscopeSdk {
         const {data} = msg;
         const {type} = data;
 
-        if (type === 'ready') {
+        if (type === SDK_READY) {
           this.isReady = true;
           return resolve();
         }
