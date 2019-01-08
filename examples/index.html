@@ -1,45 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Basic Example</title>
     <style>
-        .frame-actions { padding: 10px 0px; }
-        .login-form { display: inline-block; }
-        .logout-btn { display: inline-block; }
-        #out { height: 800px; width: 800px; resize: both; overflow: auto; padding: 5px;}
-        #out iframe { margin: 0; padding: 0; border: 0; }
+      .frame-actions {
+        padding: 10px 0px;
+      }
+      .login-form {
+        display: inline-block;
+      }
+      .logout-btn {
+        display: inline-block;
+      }
+      #out {
+        height: 800px;
+        width: 800px;
+        resize: both;
+        overflow: auto;
+        padding: 5px;
+      }
+      #out iframe {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="frame-actions">
-        Local server must be running for this to work.
-        <form class="login-form" onsubmit="doLogin(event)">
-            <input type="text" id="token">
-            <input type="submit" value="Log in">
-        </form>
-        <button class="logout-btn" onclick="doLogout()">Logout</button>
+      Local server must be running for this to work.
+      <form class="login-form" onsubmit="doLogin(event)">
+        <input type="text" id="token" /> <input type="submit" value="Log in" />
+      </form>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
     <div id="out"></div>
     <script src="bundle.js"></script>
     <script>
-        function doLogin(event) {
-            event.preventDefault();
-            
-            const jwtData = document.getElementById('token').value;
-            
-            // Log your user into the application. 
-            // Successful login will load the main application.
-            window.ws.login(jwtData);
+      function doLogin(event) {
+        event.preventDefault();
 
-            return false;
+        // Check if the SDK is ready
+        if (!window.ws.isReady) {
+          return;
         }
 
-        function doLogout() {
-            window.ws.logout();
+        const jwtData = document.getElementById('token').value;
+
+        // Log your user into the application.
+        // Successful login will load the main application.
+        window.ws.login(jwtData);
+
+        return false;
+      }
+
+      function doLogout() {
+        if (!window.ws.isReady) {
+          return;
         }
+
+        window.ws.logout();
+      }
     </script>
-</body>
+  </body>
 </html>

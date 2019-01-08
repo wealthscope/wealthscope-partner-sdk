@@ -4,7 +4,7 @@ import {WealthscopeSdk} from '../src/index.js';
 // This does NOT initialize the iFrame
 const ws = new WealthscopeSdk();
 
-// Initialize the iFrame inside the indicated element.
+// Initialize the iFrame as a child to the indicated element
 ws.render(document.getElementById('out'));
 
 window.ws = ws;
