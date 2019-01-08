@@ -90,19 +90,21 @@ export class WealthscopeSdk {
     clearTimeout(this.nextDequeueAttempt);
     this.nextDequeueAttempt = null;
 
-    if (this.msgQueue.length > 0) {
-      if (this.isReady) {
-        // Dequeue the queue if the iFrame is ready
-        const {contentWindow} = this.iframe;
-        while (this.msgQueue.length > 0) {
-          const message = this.msgQueue.shift();
-          contentWindow.postMessage(message, this.opts.wealthscopeUrl);
-        }
-      } else {
-        // Set a timeout to attempt again in 250ms
-        if (this.nextDequeueAttempt == null) {
-          this.nextDequeueAttempt = setTimeout(() => this._dequeue(), 250);
-        }
+    if (this.msgQueue.length <= 0) {
+      return;
+    }
+
+    if (this.isReady) {
+      // Dequeue the queue if the iFrame is ready
+      const {contentWindow} = this.iframe;
+      while (this.msgQueue.length > 0) {
+        const message = this.msgQueue.shift();
+        contentWindow.postMessage(message, this.opts.wealthscopeUrl);
+      }
+    } else {
+      // Set a timeout to attempt again in 250ms
+      if (!this.nextDequeueAttempt) {
+        this.nextDequeueAttempt = setTimeout(() => this._dequeue(), 250);
       }
     }
   }
