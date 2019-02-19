@@ -63,10 +63,10 @@ async function saveFormData(data) {
 
 // Generate a JWT using options passed through cfg
 async function generateJWT(cfg) {
-  const { partnerId, publicKey, privateKey, payload } = cfg;
+  const { partnerId, privateKey, payload } = cfg;
 
   // Check if required parameters were passed
-  const validConfig = partnerId && publicKey && privateKey && payload;
+  const validConfig = partnerId && privateKey && payload;
   if (!validConfig) {
     throw new TypeError('Invalid JWT data.');
   }
@@ -108,7 +108,6 @@ async function configureSDK(cfg) {
     {},
     {
       partnerId: '',
-      publicKey: '',
       privateKey: '',
       payload: {},
       frontendUrl: '',
@@ -119,12 +118,11 @@ async function configureSDK(cfg) {
   const {
     frontendUrl,
     partnerId,
-    publicKey,
     privateKey,
     payload
   } = opts;
 
-  const validJWTConfig = partnerId && publicKey && privateKey && payload;
+  const validJWTConfig = partnerId && privateKey && payload;
   if (!validJWTConfig) {
     throw new TypeError('Invalid JWT data.');
   }
@@ -134,7 +132,6 @@ async function configureSDK(cfg) {
   try {
     token = await generateJWT({
       partnerId,
-      publicKey,
       privateKey,
       payload
     });
@@ -148,7 +145,6 @@ async function configureSDK(cfg) {
   // Save all the data
   const dataToSave = {
     partnerId,
-    publicKey,
     privateKey,
     payload,
   };
@@ -159,7 +155,6 @@ async function configureSDK(cfg) {
 
   await saveFormData({
     partnerId,
-    publicKey,
     privateKey,
     payload,
     frontendUrl
