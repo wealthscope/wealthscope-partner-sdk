@@ -1,6 +1,8 @@
 import { WealthscopeSdk } from '../src/index.js';
 import db from './database';
 
+const DEFAULT_FRONTEND_URL = 'https://staging-bus.wealthscope.ca';
+
 function setAlert(message, el = $('#error')) {
   el.html(message);
   el.css({
@@ -198,9 +200,12 @@ async function initialize() {
   });
 
   // Initialize the WealthscopeSdk
-  window.ws = new WealthscopeSdk((frontendUrl && frontendUrl.value && ({
-    wealthscopeUrl: decodeURIComponent(frontendUrl.value)
-  })) || {});
+  window.ws = new WealthscopeSdk({
+    wealthscopeUrl: (
+      (frontendUrl && frontendUrl.value && decodeURIComponent(frontendUrl.value))
+      || DEFAULT_FRONTEND_URL
+    )
+  });
 
   // Render the iFrame
   window.ws.render(document.getElementById('ws'));
