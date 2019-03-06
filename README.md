@@ -1,6 +1,6 @@
 # Wealthscope SDK Documentation
 
-<b style="color: lightgreen">DRAFT DOCUMENTATION</b>
+<b style="color: lightgreen">DOCUMENTATION</b>
 
 ## Goal
 
