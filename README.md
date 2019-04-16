@@ -69,7 +69,7 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
     "user_id": "a unique identifier for your user",
     "accounts": [
         {
-            "institution": "Virtual Brokers", // The broker's name
+            "institution": "ABC Brokers", // The broker's name
             "label":"123412341234-Margin/Option", // The account's identifier
             "balance":104000.25, // The value of the account
             "cash":1234.57,
