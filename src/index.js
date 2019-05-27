@@ -18,6 +18,9 @@ export class WealthscopeSdk {
     // Flag which signifies whether the iFrame is ready
     this.isReady = false;
 
+    // Flag which signifies if the SDK has been initiated
+    this.isInit = false;
+
     // A timeout which holds the next dequeue attempt
     this.nextDequeueAttempt = null;
 
@@ -49,16 +52,36 @@ export class WealthscopeSdk {
 
       this.iframe = iframe;
 
-      window.addEventListener('message', (msg) => {
-        const {data} = msg;
-        const {type} = data;
+      if (!this.isInit) {
+        window.addEventListener('message', (msg) => {
+          const {data} = msg;
+          const {type} = data;
 
-        if (type === SDK_READY) {
-          this.isReady = true;
-          return resolve();
-        }
-      });
+          if (type === SDK_READY) {
+            this.isReady = true;
+            return resolve();
+          }
+        });
+
+        // Signify that the SDK has been initialized
+        this.isInit = true;
+      }
     });
+  }
+
+  // This will load the SDK with the extra step of resetting it if already loaded.
+  // NOTE: When it's reset, you will have to log back in.
+  load(element) {
+    if (this.isReady) {
+      this.logout();
+      this.isReady = false;
+    }
+
+    if (this.element) {
+      this.element.innerHTML = ''; // Clear previous element
+    }
+
+    return this.render(element);
   }
 
   login(jwtData) {
