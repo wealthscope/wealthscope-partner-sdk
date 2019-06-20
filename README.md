@@ -22,8 +22,8 @@ Using an iFrame-based JavaScript architecture, the SDK enables client applicatio
 
 ## Installation
 
-You can install the SDK using the command `npm install --add wealthscope-sdk`.
-If you are using Yarn, you can instead do `yarn add wealthscope-sdk`
+You can install the SDK using the command `npm install --add wealthscope-partner-sdk`.
+If you are using Yarn, you can instead do `yarn add wealthscope-partner-sdk`
 
 ## Integration Requirements
 
@@ -36,7 +36,7 @@ If you are using Yarn, you can instead do `yarn add wealthscope-sdk`
 ## Javascript Integration example
 
 ```javascript
-import { WealthscopeSdk } from 'wealthscope-sdk';
+import { WealthscopeSdk } from 'wealthscope-partner-sdk';
 
 // Instantiate WealthscopeSdk. 
 // This does NOT initialize the iFrame.
