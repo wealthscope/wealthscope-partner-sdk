@@ -69,7 +69,8 @@ export class WealthscopeSdk {
     });
   }
 
-  // This will load the SDK with the extra step of resetting it if already loaded.
+  // This will load the SDK with the extra step of resetting it if already
+  // loaded.
   // NOTE: When it's reset, you will have to log back in.
   load(element) {
     if (this.isReady) {
