@@ -182,15 +182,18 @@ export class WealthscopeApiClient {
 
   // fetch call returning a Promise, requires a URL rout and a vailid token
   get(url) {
-    // const getOptions = this._getFetchOptions('GET');
-    return fetch(this.opts.wealthscopeUrl + url, {
+    const options = {
       method: 'GET',
-      // mode: 'no-cors',
+      //mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'JWT ' + this.token,
       },
-    });
+    };
+
+    return fetch(this._constructUrl(url), options)
+      .then(response => response.json())
+      .catch(err => console.log(err));
   }
 
   // Fetch call returning a Promise, requires a URL rout, a body and a valid
@@ -198,8 +201,18 @@ export class WealthscopeApiClient {
   // NOTE: Body needs to be a JSON object here, it gets stringified when it is
   // added to the options object for the fetch
   put(url, body) {
-    const putOptions = this._getFetchOptions('PUT', body);
-    return fetch(this.opts.wealthscopeUrl + url, putOptions);
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this.token,
+      },
+      body: JSON.stringify(body),
+    };
+
+    return fetch(this._constructUrl(url), options)
+      .then(response => response.json())
+      .catch(err => console.log(err));
   }
 
   post(url, body) {
@@ -212,15 +225,25 @@ export class WealthscopeApiClient {
       body: JSON.stringify(body),
     };
 
-    // const postOptions = this._getFetchOptions('POST', body);
     return fetch(this._constructUrl(url), options)
       .then(response => response.json())
       .catch(err => console.log(err));
   }
 
   del(url, body) {
-    const deleteOptions = this._getFetchOptions('DELETE', body);
-    return fetch(this.opts.wealthscopeUrl + url, deleteOptions);
+    const options = {
+      method: 'DELETE',
+      //mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this.token,
+      },
+      body: JSON.stringify(body),
+    };
+
+    return fetch(this._constructUrl(url), options)
+      .then(response => response.json())
+      .catch(err => console.log(err));
   }
 
   // this function generates a URL
@@ -239,7 +262,7 @@ export class WealthscopeApiClient {
 
     // The Method portion of the object
     fetchOption.method = method;
-    fetchOption.mode = 'no-cors';
+    //fetchOption.mode = 'no-cors';
     // A check to make sure token is present before adding it to the options
     // return an error if token isn't present
     if (this.token != null) {
