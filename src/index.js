@@ -142,109 +142,113 @@ export class WealthscopeApiClient {
 
     // Default options, currently just the base URL for Wealthscope
     this.opts = Object.assign(
-      {
-      wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1',
+        {
+          wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1',
+        },
+        opts
+    );
+  }
+
+  // This get's the current version of Wealthscope
+  static version() {
+    return version;
+  }
+
+  // This retrieves a valid token and sets this.token to be the valid token
+  login(jwtData) {
+    // const loginOptions = this.getFetchOptions('POST', { token: jwtData });
+    fetch(this.opts.wealthscopeUrl + '/auth/authenticate/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      opts
-     );
-    }
-
-    // This get's the current version of Wealthscope
-    static version() {
-      return version;
-    }
-
-    // This retrieves a valid token and sets this.token to be the valid token
-    login(jwtData) {
-      //const loginOptions = this.getFetchOptions('POST', { token: jwtData });
-        fetch(this.opts.wealthscopeUrl + '/auth/authenticate/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({token: jwtData})
+      body: JSON.stringify({token: jwtData})
+    })
+        .then((response) => response.json())
+        .then(({token}) => {
+          this.token = token;
         })
-          .then(response => response.json())
-          .then(({ token }) => {
-            this.token = token;
-          })
-          .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log('ERROR REQUESTING TOKEN: ', err);
-          });
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log('ERROR REQUESTING TOKEN: ', err);
+        });
+  }
+
+  // This resets the token to null
+  logout() {
+    this.token = null;
+  }
+
+  // This function constructs the options object that will be used by the
+  // various fetch calls below
+  getFetchOptions(method, body) {
+    // An empty options object
+    const fetchOption = {
+      headers: {}
+    };
+
+    // The Method portion of the object
+    fetchOption.method = method;
+    fetchOption.mode = 'no-cors';
+    // A check to make sure token is present before adding it to the options
+    // return an error if token isn't present
+    if (this.token != null) {
+      fetchOption.headers.Authentication = 'JWT ' + this.token;
+    } else {
+      throw new Error('You must be logged in to perform this action.');
     }
 
-    // This resets the token to null
-    logout(){
-      this.token = null;
+    // A check for a body before it's added to the options, allows the same
+    // construction functon to be used for calls without a body component
+    // Returns the object without the body if body is empty, adds the body to
+    // the object if it's present
+    if (body != null) {
+      fetchOption.headers['Content-Type'] = 'application/json';
+      fetchOption.body = JSON.stringify(body);
     }
 
-    // This function constructs the options object that will be used by the various fetch calls below
-    getFetchOptions(method, body) {
-      // An empty options object
-      const fetchOption = {
-        headers: {}
-      };
+    return fetchOption;
+  }
 
-      // The Method portion of the object
-      fetchOption.method = method;
-      fetchOption.mode = 'no-cors';
-      // A check to make sure token is present before adding it to the options
-      // return an error if token isn't present
-      if(this.token != null) {
-        fetchOption.headers.Authentication = 'JWT ' + this.token;
-      } else {
-        throw new Error('You must be logged in to perform this action.');
-      }
+  // fetch call returning a Promise, requires a URL rout and a vailid token
+  fetchGet(url) {
+    // const getOptions = this.getFetchOptions('GET');
+    return fetch(this.opts.wealthscopeUrl + url, {
+      method: 'GET',
+      // mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this.token,
+      },
+    });
+  }
 
-      // A check for a body before it's added to the options, allows the same construction functon to be used for calls without a body component
-      // Returns the object without the body if body is empty, adds the body to the object if it's present
-      if(body != null) {
-        fetchOption.headers['Content-Type'] = 'application/json';
-        fetchOption.body = JSON.stringify(body);
-      }
+  // Fetch call returning a Promise, requires a URL rout, a body and a valid
+  // token
+  // NOTE: Body needs to be a JSON object here, it gets stringified when it is
+  // added to the options object for the fetch
+  fetchPut(url, body) {
+    const putOptions = this.getFetchOptions('PUT', body);
+    return fetch(this.opts.wealthscopeUrl + url, putOptions);
+  }
 
-      return fetchOption;
-    }
+  fetchPost(url, body) {
+    // const postOptions = this.getFetchOptions('POST', body);
+    return fetch(this.opts.wealthscopeUrl + url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this.token,
+      },
+      body: JSON.stringify(body),
+    });
+  }
 
-    // fetch call returning a Promise, requires a URL rout and a vailid token
-    fetchGet(url) {
-      //const getOptions = this.getFetchOptions('GET');
-      return fetch(this.opts.wealthscopeUrl + url, {
-        method: 'GET',
-        //mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'JWT ' + this.token,
-        },
-      });
-    }
-
-    // fetch call returning a Promise, requires a URL rout, a body and a valid token
-    // NOTE: Body needs to be a JSON object here, it gets stringified when it is added
-    // to the options object for the fetch
-    fetchPut(url, body) {
-      const putOptions = this.getFetchOptions('PUT', body);
-      return fetch(this.opts.wealthscopeUrl + url, putOptions);
-    }
-
-    fetchPost(url, body) {
-      //const postOptions = this.getFetchOptions('POST', body);
-      return fetch(this.opts.wealthscopeUrl + url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'JWT ' + this.token,
-        },
-        body: JSON.stringify(body),
-      });
-    }
-
-    fetchDelete(url, body) {
-      const deleteOptions = this.getFetchOptions('DELETE', body);
-      return fetch(this.opts.wealthscopeUrl + url, deleteOptions);
-    }
+  fetchDelete(url, body) {
+    const deleteOptions = this.getFetchOptions('DELETE', body);
+    return fetch(this.opts.wealthscopeUrl + url, deleteOptions);
+  }
 }
 
 window.API = WealthscopeApiClient;

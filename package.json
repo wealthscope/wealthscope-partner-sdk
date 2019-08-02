@@ -4,6 +4,7 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
+    "start": "webpack --watch",
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
     "build": "webpack"
   },
