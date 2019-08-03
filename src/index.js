@@ -130,7 +130,9 @@ export class WealthscopeSdk {
 export class WealthscopeApiClient {
   /**
    * Constructor for the Wealthscope Client API.
-   * Stores the authorization token for the current session, and the base URl.
+   * Initializes authorization token for the current session to null, and the base URL.
+   * opts object options can be:
+   * wealthscopeUrl
    * @param {object} opts 
    */
   constructor(opts) {
@@ -139,9 +141,7 @@ export class WealthscopeApiClient {
     this.opts = Object.assign(
         {
           wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1',
-        },
-        opts
-    );
+        }, opts);
   }
 
   /**
@@ -153,103 +153,100 @@ export class WealthscopeApiClient {
   }
 
   /**
-   * This retrieves a valid token and sets this.token to be the valid token.
+   * This generates an Authentication token and sets this.token to the generated token.
    * @param {string} jwtData 
    * @returns {Promise}
    */ 
   login(jwtData) {
-    return fetch(this.opts.wealthscopeUrl + '/auth/authenticate/', {
+    return fetch(this._constructUrl('/auth/authenticate/'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({token: jwtData})
     })
-        .then((response) => response.json())
-        .then(({token}) => {
-          this.token = token;
-        })
+        .then(response => this.token = response.json())
         .catch((err) => {
           // eslint-disable-next-line no-console
-          console.log('ERROR REQUESTING TOKEN: ', err);
+          console.error('ERROR REQUESTING TOKEN: ', err);
         });
   }
 
   /**
    * This resets the token to null.
+   * @returns {Promise}
    */
   logout() {
     this.token = null;
+    Promise.resolve();
   }
 
   /**
-   * Fetch call returning a Promise, requires a URL rout and a vailid token.
+   * This is an HTTP call using the GET method.  It requires a URL.
+   * Login must also succesfully be called before calling this method.
+   * The URL of the Wealthscope endpoint you are trying to reach
+   * The Wealthscope endpoint URL
    * @param {string} url 
    * @returns {Promise}
    */
   get(url) {
-    const postOptions = this._getFetchOptions('GET');
-    return fetch(this._constructUrl(url), postOptions)
-      .then(response => response.json())
-      .catch(err => console.log(err));
+    return this._doFetch(url, 'GET');
   }
 
   /**
-   * Fetch call returning a Promise, requires a URL rout, a body and a valid
-   * token.
+   * This is an HTTP call using the PUT method.  It requires a URL and a body.  
+   * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
+   * The Wealthscope endpoint URL
    * @param {string} url 
+   * The json object that is the payload for the call
    * @param {object} body 
    * @returns {Promise}
    */
   put(url, body) {
-    const postOptions = this._getFetchOptions('PUT', body);
-    return fetch(this._constructUrl(url), postOptions)
-      .then(response => response.json())
-      .catch(err => console.log(err));
+    return this._doFetch(url, 'PUT', body);
   }
 
   /**
-   * Fetch call returning a Promise, requires a URL rout, a body and a valid
-   * token.
+   * This is an HTTP call using the POST method.  It requires a URL and a body.  
+   * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
+   * The Wealthscope endpoint URL
    * @param {string} url 
+   * The json object that is the payload for the call
    * @param {object} body 
    * @returns {Promise}
    */
   post(url, body) {
-    const postOptions = this._getFetchOptions('POST', body);
-    return fetch(this._constructUrl(url), postOptions)
-      .then(response => response.json())
-      .catch(err => console.log(err));
+    return this._doFetch(url, 'POST', body);
   }
 
   /**
-   * Fetch call returning a Promise, requires a URL rout, a body and a valid
-   * token.
+   * This is an HTTP call using the DELETE method.  It requires a URL and a body.
+   * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
+   * The Wealthscope endpoint URL
    * @param {string} url 
+   * The json object that is the payload for the call
    * @param {object} body 
    * @returns {Promise}
    */
   del(url, body) {
-    const postOptions = this._getFetchOptions('DELETE', body);
-    return fetch(this._constructUrl(url), postOptions)
-      .then(response => response.json())
-      .catch(err => console.log(err));
+    return this._doFetch(url, 'DELETE', body);
   }
 
   /**
    * Generates a URL, and ensures a trailing '/'
+   * The Wealthscope endpoint URL
    * @param {string} url
    * @returns {string} 
    * @private
    */
   _constructUrl(url) {
-    // trailing slash is important in order for `fetch` to work
+    // trailing slash is important in order for `fetch` to work with the Django backend.
     return urlJoin(this.opts.wealthscopeUrl, url) + '/'
   }
 
@@ -257,7 +254,9 @@ export class WealthscopeApiClient {
    * This function constructs the options object that will be used by the
    * various fetch calls below.
    * NOTE: method must be in ALL CAPS, body must be a json object
+   * The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
    * @param {string} method 
+   * The json object that is the payload for the call
    * @param {object} body 
    * @returns {object}
    * @private
@@ -273,7 +272,7 @@ export class WealthscopeApiClient {
 
     // A check to make sure token is present before adding it to the options
     // return an error if token isn't present
-    if (this.token != null) {
+    if (this.token !== null) {
       fetchOption.headers.Authorization = 'JWT ' + this.token;
     } else {
       throw new Error('You must be logged in to perform this action.');
@@ -283,7 +282,7 @@ export class WealthscopeApiClient {
     // construction functon to be used for calls without a body component
     // Returns the object without the body if body is empty, adds the body to
     // the object if it's present
-    if (body != null) {
+    if (!body) {
       fetchOption.headers['Content-Type'] = 'application/json';
       fetchOption.body = JSON.stringify(body);
     }
@@ -291,6 +290,22 @@ export class WealthscopeApiClient {
     return fetchOption;
   }
 
-}
+  /**
+   * This function handles fetch calls by being passed parameters from each of GET, PUT, POST, and DELETE
+   * The Wealthscope endpoint URL
+   * @param {string} url 
+   * The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
+   * @param {string} method 
+   * The json object that is the payload for the call
+   * @param {object} body 
+   * @returns {Promise}
+   * @private
+   */
+  _doFetch(url, method, body) {
+    const options = this._getFetchOptions(method, body);
+    return fetch(this._constructUrl(url), options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
+  }
 
-window.API = WealthscopeApiClient;
+}

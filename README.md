@@ -1,24 +1,8 @@
-# Wealthscope SDK Documentation
-
-<b style="color: lightgreen">DOCUMENTATION</b>
+# Common
 
 ## Goal
 
 This JavaScript-based SDK has been developed to allow integration with the Wealthscope platform with a minimum of effort from Wealthscope's clients. It is intended to be a 'one stop shop' for integrations with the Wealthscope platform, with minimal additional configuration needed either on the backend or the frontend of the client's platform.
-
-## Approach
-
-Using an iFrame-based JavaScript architecture, the SDK enables client applications to inject Wealthscope directly into their pages, removing the need to build a complete frontend solution to accommodate for Wealthscope's dataset. This enables an extremely rich customer experience to be fully acquired with a minimum of additional development overhead on the part of the client organization.
-
-
-## Capabilities
-
-* NPM-based installation
-* Easy JavaScript-based configuration
-* Zero-effort iFrame injection during application runtime
-* Complete iFrame management
-* User-level authentication using RS512 JWT tokens
-* Flexible API-based data integration
 
 ## Installation
 
@@ -32,6 +16,23 @@ If you are using Yarn, you can instead do `yarn add wealthscope-partner-sdk`
 1. The client must support the latest web browsers, and have JavaScript enabled.
 1. The client must possess a partner name. Speak to your Wealthscope contact for more information.
 1. The client must have shared a RSA SHA-512 public key with Wealthscope. Speak to your Wealthscope contact for more information.
+
+# Wealthscope SDK Documentation
+
+<b style="color: lightgreen">DOCUMENTATION</b>
+
+## Approach
+
+Using an iFrame-based JavaScript architecture, the SDK enables client applications to inject Wealthscope directly into their pages, removing the need to build a complete frontend solution to accommodate for Wealthscope's dataset. This enables an extremely rich customer experience to be fully acquired with a minimum of additional development overhead on the part of the client organization.
+
+## Capabilities
+
+* NPM-based installation
+* Easy JavaScript-based configuration
+* Zero-effort iFrame injection during application runtime
+* Complete iFrame management
+* User-level authentication using RS512 JWT tokens
+* Flexible API-based data integration
 
 ## Javascript Integration example
 
@@ -102,3 +103,37 @@ If authentication is successful, the main application will load inside the iFram
 
 An authentication error will be thrown if login fails.
 
+
+# Wealthscope Client API
+
+## Approach
+
+Using simple HTTP calls, this allows the client to retrieve the information they need from Wealthscope, but format and displat it however they choose.
+
+## Capabilities
+
+* Simple HTTP calls to retrieve information from Wealthscope
+* Allows customization of how the information is formatted and displayed
+
+## Javascript Integration Example
+
+```javascript
+import {WealthscopeApiClient} from 'wealthscope-partner-sdk';
+
+// Instantiate Wealthscope Client API
+const client = new WealthscopeApiClient()
+
+// Pass jwtToken and receive back your Authentication token
+client.login(jwtToken);
+
+// Call to post data to the relevant route
+// URL is a string, body is a json object
+client.post(url, body);
+
+// Revoke the token, effectively logging the user out
+client.logout();
+```
+
+### Options
+
+* WealthscopeUrl - The base URL the API is pointing to.
