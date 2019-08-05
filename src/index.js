@@ -138,10 +138,9 @@ export class WealthscopeApiClient {
   constructor(opts) {
     this.token = null;
 
-    this.opts = Object.assign(
-        {
-          wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1',
-        }, opts);
+    this.opts = Object.assign({
+      wealthscopeUrl: 'https://api.bus.wealthscope.ca/v1',
+    }, opts);
   }
 
   /**
@@ -155,7 +154,7 @@ export class WealthscopeApiClient {
   /**
    * This generates an Authentication token and sets this.token to the generated token.
    * @param {string} jwtData 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    */ 
   login(jwtData) {
     return fetch(this._constructUrl('/auth/authenticate/'), {
@@ -165,11 +164,11 @@ export class WealthscopeApiClient {
       },
       body: JSON.stringify({token: jwtData})
     })
-        .then(response => this.token = response.json())
-        .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.error('ERROR REQUESTING TOKEN: ', err);
-        });
+    .then(async (response) => {
+      const json = await response.json();
+      this.token = json.token;
+      return response;
+    });
   }
 
   /**
@@ -187,7 +186,7 @@ export class WealthscopeApiClient {
    * The URL of the Wealthscope endpoint you are trying to reach
    * The Wealthscope endpoint URL
    * @param {string} url 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    */
   get(url) {
     return this._doFetch(url, 'GET');
@@ -202,7 +201,7 @@ export class WealthscopeApiClient {
    * @param {string} url 
    * The json object that is the payload for the call
    * @param {object} body 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    */
   put(url, body) {
     return this._doFetch(url, 'PUT', body);
@@ -217,7 +216,7 @@ export class WealthscopeApiClient {
    * @param {string} url 
    * The json object that is the payload for the call
    * @param {object} body 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    */
   post(url, body) {
     return this._doFetch(url, 'POST', body);
@@ -232,7 +231,7 @@ export class WealthscopeApiClient {
    * @param {string} url 
    * The json object that is the payload for the call
    * @param {object} body 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    */
   del(url, body) {
     return this._doFetch(url, 'DELETE', body);
@@ -282,7 +281,7 @@ export class WealthscopeApiClient {
     // construction functon to be used for calls without a body component
     // Returns the object without the body if body is empty, adds the body to
     // the object if it's present
-    if (!body) {
+    if (body) {
       fetchOption.headers['Content-Type'] = 'application/json';
       fetchOption.body = JSON.stringify(body);
     }
@@ -298,13 +297,12 @@ export class WealthscopeApiClient {
    * @param {string} method 
    * The json object that is the payload for the call
    * @param {object} body 
-   * @returns {Promise}
+   * @returns {Promise<Response>}
    * @private
    */
   _doFetch(url, method, body) {
     const options = this._getFetchOptions(method, body);
     return fetch(this._constructUrl(url), options)
-    .then(response => response.json())
     .catch(err => console.error(err));
   }
 
