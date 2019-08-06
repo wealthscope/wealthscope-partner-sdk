@@ -130,10 +130,9 @@ export class WealthscopeSdk {
 export class WealthscopeApiClient {
   /**
    * Constructor for the Wealthscope Client API.
-   * Initializes authorization token for the current session to null, and the base URL.
-   * opts object options can be:
-   * wealthscopeUrl
-   * @param {object} opts the URL of the wealthscope API. Default: https://api.bus.wealthscope.ca/v1
+   * Initializes authorization token for the current session to null, and the 
+   * base URL.
+   * @param {object} opts options object.
    */
   constructor(opts) {
     this.token = null;
@@ -152,8 +151,9 @@ export class WealthscopeApiClient {
   }
 
   /**
-   * This generates an Authentication token and sets this.token to the generated token.
-   * @param {string} jwtData The login payload for your user. See README and documentation.
+   * This generates an Authentication token and sets this.token to the 
+   * generated token.
+   * @param {string} jwtData The login payload for your user.
    * @returns {Promise<Response>}
    */ 
   login(jwtData) {

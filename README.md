@@ -136,4 +136,16 @@ client.logout();
 
 ### Options
 
-* WealthscopeUrl - The base URL the API is pointing to.
+* wealthscopeUrl - The base URL the API is pointing to.
+
+Example:
+
+```es6
+const options = {
+    wealthscopeUrl: "https://api.bus.wealthscope.ca"
+}
+```
+
+
+# Changelog
+`v1.1.0` - Added the WealthscopeApiClient, a powerful new way to directly call Wealthscope's API endpoints.
