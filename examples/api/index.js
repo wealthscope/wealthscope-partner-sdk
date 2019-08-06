@@ -5,23 +5,69 @@ import "babel-polyfill";
 // Parcel bundler can "fake" fs.readFileSync during compilation.
 import fs from 'fs';
 const privateKey = fs.readFileSync('private.key', 'utf-8');
-// const publicKey = fs.readFileSync('public.key', 'utf-8');
 
+/**
+ * Constructs the JWT payload. 
+ * Typically, you would do this on the backend.
+ */
+function constructJwtPayload() {
+  const payload = {
+    // Your partner_name will be provided to you by Wealthscope.
+    "partner_name": "testpartner",
+    "user_id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjI5NTI4NjgsImV4cCI6MTU2Mjk1NjQ2OCwiYXVkIjoid2VhbHRoc2NvcGUvd2VhbHRoc2NvcGUiLCJpc3MiOiJ3ZWFsdGhpY2EiLCJzdWIiOiI1NTgxYTgxMjAwMWIzYjExMDAwYWUzOWEifQ.VNlAAoQ769KqkroHIuMcBLetOCkye5hQtqP0RL_wIqA",
+    "accounts": [
+      {
+        "institution": "ABC Brokers", // The broker's name
+        "label":"123412341234-Margin/Option", // The account's identifier
+        "balance":104000.25, // The value of the account
+        "cash":1234.57,
+        "holdings": [
+          {
+            "ticker": "GOOG", // American tickers are as-is, Canadian ones must end with `:CA`
+            "quantity": 2, // The number of shares
+            "market_value": 5000.00,
+            "name":"Alphabet Inc Class C",
+            "security_type":"Stock"
+          },
+          {
+            "ticker": "BNS:CA",
+            "quantity": 3,
+            "market_value":6000.00,
+            "name":"Bank of Nova Scotia",
+            "security_type":"Stock"
+          },
+        ]
+      }
+    ]
+  };
+
+  return jwt.sign(payload, privateKey, {algorithm: 'RS512'});
+}
+
+/**
+ * Main function for this example.
+ */
 async function run() {
-  // add options if needed
+  // Set options for the client instance
   const options = {
     wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1'
   };
   
+  // Construct the API client instance
   const api = new WealthscopeApiClient(options);
+
+  // Simulate server-side construction of the login payload JWT
   const loginPayload = constructJwtPayload();
   
+  // Perform login
   console.log('Performing login.');
   await api.login(loginPayload);
   console.log('RESULT: login, token field should be populated', api);
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
+
+  // At this point, we start doing various calls with example payloads
 
   console.log('Performing portfolio/analytics call.');
   const analyticsResults = await api.post('portfolio/analytics', {
@@ -181,19 +227,6 @@ run();
 
 
 // helper functions
-
-/**
- * Constructs the JWT payload. Typically, you would do this on the backend.
- */
-function constructJwtPayload() {
-  const payload = {
-    "partner_name": "testpartner",
-    "user_id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjI5NTI4NjgsImV4cCI6MTU2Mjk1NjQ2OCwiYXVkIjoid2VhbHRoc2NvcGUvd2VhbHRoc2NvcGUiLCJpc3MiOiJ3ZWFsdGhpY2EiLCJzdWIiOiI1NTgxYTgxMjAwMWIzYjExMDAwYWUzOWEifQ.VNlAAoQ769KqkroHIuMcBLetOCkye5hQtqP0RL_wIqA",
-    "accounts": []
-  }
-
-  return jwt.sign(payload, privateKey, {algorithm: 'RS512'});
-}
 
 /**
  * Sleep function to throttle calls to the API
