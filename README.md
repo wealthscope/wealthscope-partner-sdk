@@ -137,3 +137,7 @@ client.logout();
 ### Options
 
 * WealthscopeUrl - The base URL the API is pointing to.
+
+
+# Changelog
+`v0.2.0` - Added the WealthscopeApiClient, a powerful new way to directly call Wealthscope's API endpoints.
