@@ -133,7 +133,7 @@ export class WealthscopeApiClient {
    * Initializes authorization token for the current session to null, and the base URL.
    * opts object options can be:
    * wealthscopeUrl
-   * @param {object} opts 
+   * @param {object} opts the URL of the wealthscope API. Default: https://api.bus.wealthscope.ca/v1
    */
   constructor(opts) {
     this.token = null;
@@ -145,7 +145,7 @@ export class WealthscopeApiClient {
 
   /**
    * Function that returns the current version from the package.json.
-   * @returns {string}
+   * @returns {string} the current version of the package
    */
   static version() {
     return version;
@@ -153,7 +153,7 @@ export class WealthscopeApiClient {
 
   /**
    * This generates an Authentication token and sets this.token to the generated token.
-   * @param {string} jwtData 
+   * @param {string} jwtData The login payload for your user. See README and documentation.
    * @returns {Promise<Response>}
    */ 
   login(jwtData) {
@@ -172,7 +172,7 @@ export class WealthscopeApiClient {
   }
 
   /**
-   * This resets the token to null.
+   * This simply resets the token to null. No API call is actually made.
    * @returns {Promise}
    */
   logout() {
@@ -183,9 +183,7 @@ export class WealthscopeApiClient {
   /**
    * This is an HTTP call using the GET method.  It requires a URL.
    * Login must also succesfully be called before calling this method.
-   * The URL of the Wealthscope endpoint you are trying to reach
-   * The Wealthscope endpoint URL
-   * @param {string} url 
+   * @param {string} url The URL of the desired Wealthscope endpoint
    * @returns {Promise<Response>}
    */
   get(url) {
@@ -197,10 +195,8 @@ export class WealthscopeApiClient {
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
-   * The Wealthscope endpoint URL
-   * @param {string} url 
-   * The json object that is the payload for the call
-   * @param {object} body 
+   * @param {string} url The URL of the desired Wealthscope endpoint
+   * @param {object} body The json object that is the payload for the call
    * @returns {Promise<Response>}
    */
   put(url, body) {
@@ -212,10 +208,8 @@ export class WealthscopeApiClient {
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
-   * The Wealthscope endpoint URL
-   * @param {string} url 
-   * The json object that is the payload for the call
-   * @param {object} body 
+   * @param {string} url The URL of the desired Wealthscope endpoint
+   * @param {object} body The json object that is the payload for the call
    * @returns {Promise<Response>}
    */
   post(url, body) {
@@ -227,10 +221,8 @@ export class WealthscopeApiClient {
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
-   * The Wealthscope endpoint URL
-   * @param {string} url 
-   * The json object that is the payload for the call
-   * @param {object} body 
+   * @param {string} url The URL of the desired Wealthscope endpoint
+   * @param {object} body The json object that is the payload for the call
    * @returns {Promise<Response>}
    */
   del(url, body) {
@@ -238,11 +230,10 @@ export class WealthscopeApiClient {
   }
 
   /**
-   * Generates a URL, and ensures a trailing '/'
-   * The Wealthscope endpoint URL
-   * @param {string} url
-   * @returns {string} 
    * @private
+   * Generates a URL based on options.wealthscopeUrl, and ensures a trailing '/'
+   * @param {string} url The URL of the desired Wealthscope endpoint
+   * @returns {string} A fully constructed URL
    */
   _constructUrl(url) {
     // trailing slash is important in order for `fetch` to work with the Django backend.
@@ -250,15 +241,13 @@ export class WealthscopeApiClient {
   }
 
   /**
+   * @private
    * This function constructs the options object that will be used by the
    * various fetch calls below.
    * NOTE: method must be in ALL CAPS, body must be a json object
-   * The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
-   * @param {string} method 
-   * The json object that is the payload for the call
-   * @param {object} body 
+   * @param {string} method The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
+   * @param {object} body The json object that is the payload for the call
    * @returns {object}
-   * @private
    */
   _getFetchOptions(method, body) {
     // An options object with empty headers
@@ -290,15 +279,12 @@ export class WealthscopeApiClient {
   }
 
   /**
-   * This function handles fetch calls by being passed parameters from each of GET, PUT, POST, and DELETE
-   * The Wealthscope endpoint URL
-   * @param {string} url 
-   * The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
-   * @param {string} method 
-   * The json object that is the payload for the call
-   * @param {object} body 
-   * @returns {Promise<Response>}
    * @private
+   * This function handles fetch calls by being passed parameters from each of GET, PUT, POST, and DELETE
+   * @param {string} url The URL of the desired Wealthscope endpoint
+   * @param {string} method The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
+   * @param {object} body The json object that is the payload for the call
+   * @returns {Promise<Response>}
    */
   _doFetch(url, method, body) {
     const options = this._getFetchOptions(method, body);

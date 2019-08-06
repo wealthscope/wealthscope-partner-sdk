@@ -1,9 +1,9 @@
 import { WealthscopeApiClient } from '../../src/index';
 import * as jwt from 'jsonwebtoken';
 import "babel-polyfill";
+import fs from 'fs'; // Parcel bundler can "fake" fs.readFileSync during compilation.
 
-// Parcel bundler can "fake" fs.readFileSync during compilation.
-import fs from 'fs';
+// Read the private key from `./private.key`
 const privateKey = fs.readFileSync('private.key', 'utf-8');
 
 /**
@@ -14,7 +14,10 @@ function constructJwtPayload() {
   const payload = {
     // Your partner_name will be provided to you by Wealthscope.
     "partner_name": "testpartner",
-    "user_id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NjI5NTI4NjgsImV4cCI6MTU2Mjk1NjQ2OCwiYXVkIjoid2VhbHRoc2NvcGUvd2VhbHRoc2NvcGUiLCJpc3MiOiJ3ZWFsdGhpY2EiLCJzdWIiOiI1NTgxYTgxMjAwMWIzYjExMDAwYWUzOWEifQ.VNlAAoQ769KqkroHIuMcBLetOCkye5hQtqP0RL_wIqA",
+    // This is a key that uniquely identifies the partner's user ID to Wealthscope.
+    // This could be derived from some unique property of the user, such as email or database ID.
+    "user_id": "testpartner-user-id-xyz123",
+    // The partner user's account.
     "accounts": [
       {
         "institution": "ABC Brokers", // The broker's name
@@ -224,7 +227,6 @@ async function run() {
 }
 
 run();
-
 
 // helper functions
 
