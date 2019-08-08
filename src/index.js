@@ -130,7 +130,7 @@ export class WealthscopeSdk {
 export class WealthscopeApiClient {
   /**
    * Constructor for the Wealthscope Client API.
-   * Initializes authorization token for the current session to null, and the 
+   * Initializes authorization token for the current session to null, and the
    * base URL.
    * @param {object} opts options object.
    */
@@ -144,18 +144,18 @@ export class WealthscopeApiClient {
 
   /**
    * Function that returns the current version from the package.json.
-   * @returns {string} the current version of the package
+   * @return {string} the current version of the package
    */
   static version() {
     return version;
   }
 
   /**
-   * This generates an Authentication token and sets this.token to the 
+   * This generates an Authentication token and sets this.token to the
    * generated token.
    * @param {string} jwtData The login payload for your user.
-   * @returns {Promise<Response>}
-   */ 
+   * @return {Promise<Response>}
+   */
   login(jwtData) {
     return fetch(this._constructUrl('/auth/authenticate/'), {
       method: 'POST',
@@ -164,66 +164,66 @@ export class WealthscopeApiClient {
       },
       body: JSON.stringify({token: jwtData})
     })
-    .then(async (response) => {
-      const json = await response.json();
-      this.token = json.token;
-      return response;
-    });
+        .then(async (response) => {
+          const json = await response.json();
+          this.token = json.token;
+          return response;
+        });
   }
 
   /**
    * This simply resets the token to null. No API call is actually made.
-   * @returns {Promise}
+   * @return {Promise}
    */
   logout() {
     this.token = null;
-    Promise.resolve();
+    return Promise.resolve();
   }
 
   /**
    * This is an HTTP call using the GET method.  It requires a URL.
    * Login must also succesfully be called before calling this method.
    * @param {string} url The URL of the desired Wealthscope endpoint
-   * @returns {Promise<Response>}
+   * @return {Promise<Response>}
    */
   get(url) {
     return this._doFetch(url, 'GET');
   }
 
   /**
-   * This is an HTTP call using the PUT method.  It requires a URL and a body.  
+   * This is an HTTP call using the PUT method.  It requires a URL and a body.
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
    * @param {string} url The URL of the desired Wealthscope endpoint
    * @param {object} body The json object that is the payload for the call
-   * @returns {Promise<Response>}
+   * @return {Promise<Response>}
    */
   put(url, body) {
     return this._doFetch(url, 'PUT', body);
   }
 
   /**
-   * This is an HTTP call using the POST method.  It requires a URL and a body.  
+   * This is an HTTP call using the POST method.  It requires a URL and a body.
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
    * @param {string} url The URL of the desired Wealthscope endpoint
    * @param {object} body The json object that is the payload for the call
-   * @returns {Promise<Response>}
+   * @return {Promise<Response>}
    */
   post(url, body) {
     return this._doFetch(url, 'POST', body);
   }
 
   /**
-   * This is an HTTP call using the DELETE method.  It requires a URL and a body.
+   * This is an HTTP call using the DELETE method. It requires a URL and a body
    * Login must also succesfully be called before calling this method.
    * NOTE: Body needs to be a JSON object here, it gets stringified when it is
    * added to the options object for the fetch.
    * @param {string} url The URL of the desired Wealthscope endpoint
    * @param {object} body The json object that is the payload for the call
-   * @returns {Promise<Response>}
+   * @return {Promise<Response>}
    */
   del(url, body) {
     return this._doFetch(url, 'DELETE', body);
@@ -233,11 +233,12 @@ export class WealthscopeApiClient {
    * @private
    * Generates a URL based on options.wealthscopeUrl, and ensures a trailing '/'
    * @param {string} url The URL of the desired Wealthscope endpoint
-   * @returns {string} A fully constructed URL
+   * @return {string} A fully constructed URL
    */
   _constructUrl(url) {
-    // trailing slash is important in order for `fetch` to work with the Django backend.
-    return urlJoin(this.opts.wealthscopeUrl, url) + '/'
+    // trailing slash is important in order for `fetch` to work with the Django
+    // backend.
+    return urlJoin(this.opts.wealthscopeUrl, url) + '/';
   }
 
   /**
@@ -245,9 +246,9 @@ export class WealthscopeApiClient {
    * This function constructs the options object that will be used by the
    * various fetch calls below.
    * NOTE: method must be in ALL CAPS, body must be a json object
-   * @param {string} method The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
+   * @param {string} method The HTTP method for the fetch call (GET, PUT...)
    * @param {object} body The json object that is the payload for the call
-   * @returns {object}
+   * @return {object}
    */
   _getFetchOptions(method, body) {
     // An options object with empty headers
@@ -280,16 +281,16 @@ export class WealthscopeApiClient {
 
   /**
    * @private
-   * This function handles fetch calls by being passed parameters from each of GET, PUT, POST, and DELETE
+   * This function handles fetch calls by being passed parameters from each
+   * of GET, PUT, POST, and DELETE
    * @param {string} url The URL of the desired Wealthscope endpoint
-   * @param {string} method The HTTP method for the fetch call (GET, PUT, POST, or DELETE)
+   * @param {string} method The HTTP method (GET, PUT, POST, or DELETE)
    * @param {object} body The json object that is the payload for the call
-   * @returns {Promise<Response>}
+   * @return {Promise<Response>}
    */
   _doFetch(url, method, body) {
     const options = this._getFetchOptions(method, body);
     return fetch(this._constructUrl(url), options)
-    .catch(err => console.error(err));
+        .catch((err) => console.error(err));
   }
-
 }
