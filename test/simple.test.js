@@ -25,6 +25,8 @@ describe('class WealthscopeSdk', function() {
       const ws = new WealthscopeSdk();
       ws.render(renderedDiv);
 
+      const iframes = iFrameResize( [{ log: true }], '#iframe' );
+
       assert.ok(div.getElementsByTagName('iframe')[0]);
     });
   });
