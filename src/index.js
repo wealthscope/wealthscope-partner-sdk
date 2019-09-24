@@ -23,7 +23,7 @@ export class WealthscopeSdk {
         // place defaults here
           wealthscopeUrl: 'https://bus.wealthscope.ca',
           width: '100%',
-          height: '100%'
+          height: '',
         },
         opts
     );
