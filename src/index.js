@@ -3,8 +3,6 @@ const urlJoin = require('url-join');
 
 const SDK_READY = 'SDK_READY';
 
-let iframes = iFrameResize( [{options}], [css selector] || [iframe] );
-
 export class WealthscopeSdk {
   constructor(opts) {
     // A queue to hold messages that are to be dispatched
