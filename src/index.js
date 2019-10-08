@@ -3,6 +3,8 @@ const urlJoin = require('url-join');
 
 const SDK_READY = 'SDK_READY';
 
+import {iframeResizer} from 'iframe-resizer';
+
 export class WealthscopeSdk {
   constructor(opts) {
     // A queue to hold messages that are to be dispatched
@@ -23,7 +25,8 @@ export class WealthscopeSdk {
         // place defaults here
           wealthscopeUrl: 'https://bus.wealthscope.ca',
           width: '100%',
-          height: '100%'
+          height: '100%',
+          id: 'wealthscope',
         },
         opts
     );
@@ -38,12 +41,15 @@ export class WealthscopeSdk {
       this.element = element;
 
       const iframe = document.createElement('iframe');
+      iframe.id = this.opts.id;
       iframe.src = this.opts.wealthscopeUrl;
       iframe.width = this.opts.width;
       iframe.height = this.opts.height;
       element.appendChild(iframe);
 
       this.iframe = iframe;
+
+      iframeResizer({log: false}, this.iframe);
 
       if (!this.isInit) {
         window.addEventListener('message', (msg) => {
