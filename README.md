@@ -70,22 +70,22 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
     "user_id": "a unique identifier for your user",
     "accounts": [
         {
-            "institution": "ABC Brokers", // The broker's name
-            "label":"123412341234-Margin/Option", // The account's identifier
-            "balance":104000.25, // The value of the account
-            "cash":1234.57,
+            "institution": "ABC Brokers", // The broker or institution the account is with
+            "label":"123412341234-Margin", // The account's identifier
+            "balance":6086.35, // The balance in CAD of the account
+            "cash":1000, // The amount of cash in CAD in the account
             "holdings": [
                 {
-                    "ticker": "GOOG", // American tickers are as-is, Canadian ones must end with `:CA`
-                    "quantity": 2, // The number of shares
-                    "market_value": 5000.00,
-                    "name":"Alphabet Inc Class C",
-                    "security_type":"Stock"
+                    "ticker": "GOOG", // Ticker symbol of the holding, also see important remarks below
+                    "quantity": 2, // The number of shares of the holding
+                    "market_value": 3394.35, // The market value in CAD of the holding
+                    "name":"Alphabet Inc Class C", // The name of the holding
+                    "security_type":"Stock" // One of the following: Stock, Fixed Income, Mutual Fund, ETF, Other
                 },
                 {
                     "ticker": "BNS:CA",
-                    "quantity": 3,
-                    "market_value":6000.00,
+                    "quantity": 30,
+                    "market_value":1692.00,
                     "name":"Bank of Nova Scotia",
                     "security_type":"Stock"
                 },
@@ -103,6 +103,14 @@ If authentication is successful, the main application will load inside the iFram
 
 An authentication error will be thrown if login fails.
 
+**Important Remarks**
+1. All dollar values must be denominated in CAD.
+2. Supported types of securites are Canadan and U.S. stocks, Canadian and U.S. ETF's, and Canadian mutual funds.
+3. Ticker symbols for the U.S. listed securties should be entered as is, without any exchange suffix. For Canadian listed securities, the following exchange suffix should be appended to the ticker symbols:
+    * securities listed on TSX should end with `:CA`
+    * securities listed on NEO ATS (NEO-N) should end with `:AQN`
+    * securities listed on NEO-L should end with `:AQL`
+    * securities listed on Alpha Exchange should end with `:APH`
 
 # Wealthscope Client API
 
