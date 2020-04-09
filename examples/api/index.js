@@ -7,7 +7,7 @@ import fs from 'fs'; // Parcel bundler can "fake" fs.readFileSync during compila
 const privateKey = fs.readFileSync('private.key', 'utf-8');
 
 /**
- * Constructs the JWT payload. 
+ * Constructs the JWT payload.
  * Typically, you would do this on the backend.
  */
 function constructJwtPayload() {
@@ -18,30 +18,7 @@ function constructJwtPayload() {
     // This could be derived from some unique property of the user, such as email or database ID.
     "user_id": "testpartner-user-id-xyz123",
     // The partner user's account.
-    "accounts": [
-      {
-        "institution": "ABC Brokers", // The broker's name
-        "label":"123412341234-Margin/Option", // The account's identifier
-        "balance":104000.25, // The value of the account
-        "cash":1234.57,
-        "holdings": [
-          {
-            "ticker": "GOOG", // American tickers are as-is, Canadian ones must end with `:CA`
-            "quantity": 2, // The number of shares
-            "market_value": 5000.00,
-            "name":"Alphabet Inc Class C",
-            "security_type":"Stock"
-          },
-          {
-            "ticker": "BNS:CA",
-            "quantity": 3,
-            "market_value":6000.00,
-            "name":"Bank of Nova Scotia",
-            "security_type":"Stock"
-          },
-        ]
-      }
-    ]
+    "accounts": []
   };
 
   return jwt.sign(payload, privateKey, {algorithm: 'RS512'});
@@ -53,15 +30,15 @@ function constructJwtPayload() {
 async function run() {
   // Set options for the client instance
   const options = {
-    wealthscopeUrl: 'https://api.staging-bus.wealthscope.ca/v1'
+    wealthscopeUrl: 'https://api.bus.wealthscope.ca/v1'
   };
-  
+
   // Construct the API client instance
   const api = new WealthscopeApiClient(options);
 
   // Simulate server-side construction of the login payload JWT
   const loginPayload = constructJwtPayload();
-  
+
   // Perform login
   console.log('Performing login.');
   await api.login(loginPayload);
@@ -74,12 +51,8 @@ async function run() {
 
   console.log('Performing portfolio/analytics call.');
   const analyticsResults = await api.post('portfolio/analytics', {
-    symbols: "KXI,L:CA,MDLZ,QQQ,RQH:CA,WN:CA,XCV:CA,XDV:CA,XIN:CA,XIU:CA,XMW:CA,XSP:CA",
-    weights: "0.0639,0.0942,0.0932,0.1409,0.0959,0.0196,0.0398,0.0761,0.0798,0.0295,0.1934,0.0737",
-    region: "CA",
-    target: 0.01,
-    init_date: "2007-08-01",
-    end_date: "2018-11-30"
+    symbols: "IVV,XBB:CA",
+    weights: "0.5,0.5"
   });
   console.log('RESULT: portfolio/analytics', await analyticsResults.json());
 
@@ -98,113 +71,80 @@ async function run() {
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/post-retirement call.');
-  const postRetirementResults = await api.post('portfolio/post-retirement', {
-    region: "CA", 
-    init_date: "2007-04-01", 
-    end_date: "2018-01-31", 
-    symbols: "ACWV,FXM:CA,IVV,QQQ,XFN:CA,XIT:CA,CGL:CA", 
-    weights: "0.20,0.10,0.20,0.10,0.10,0.10,0.20", 
-    age: 65, 
-    retAge: 65, 
-    gender: "M", 
-    annuityRate: 0.02, 
-    exp: 20000, 
-    cpp: 10000, 
-    cppAge: 65, 
-    oas: 4500, 
-    oasAge: 65, 
-    pension: 0, 
-    pensionAge: 0, 
-    pensionInf: "No", 
-    other: 0, 
-    otherAge: 65, 
-    otherInf: "No", 
-    Inf: 0.02
+  console.log('Performing planning/post-retirement call.');
+  const postRetirementResults = await api.post('planning/post-retirement', {
+    symbols: "IVV",
+    weights: "1",
+    age: 30,
+    retAge: 65,
+    gender: "M",
+    exp: 50000,
+    cpp: 10000,
+    cppAge: 65,
+    oas: 8000,
+    oasAge: 65
   });
-  console.log('RESULT: portfolio/post-retirement', await postRetirementResults.json());
+  console.log('RESULT: planning/post-retirement', await postRetirementResults.json());
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/couple-post-retirement call.');
-  const couplePostRetirementResults = await api.post('portfolio/couple-post-retirement', {
-    region: "CA", 
-    init_date: "2007-04-01", 
-    end_date: "2018-01-31", 
-    symbols: "ACWV,FXM:CA,IVV,QQQ,XFN:CA,XIT:CA,CGL:CA", 
-    weights: "0.20,0.10,0.20,0.10,0.10,0.10,0.20", 
-    age: 30, 
-    retAge: 65, 
-    gender: "M", 
-    cpp: 10000, 
-    cppAge: 65, 
-    oas: 8000, 
-    oasAge: 65, 
-    pension: 0, 
-    pensionAge: 65, 
-    pensionInf: "No", 
-    other: 0, 
-    otherAge: 65, 
-    otherInf: "No", 
-    wage: 0, 
-    age2: 30, 
-    retAge2: 70, 
-    gender2: "F", 
-    cpp2: 9000, 
-    cppAge2: 70, 
-    oas2: 7000, 
-    oasAge2: 70, 
-    pension2: 0, 
-    pensionAge2: 65, 
-    pensionInf2: "No",
-    other2: 0, 
-    otherAge2: 65, 
-    otherInf2: "No", 
-    wage2: 0, 
-    exp: 60000, 
-    inf: 0.02 
+  console.log('Performing planning/couple-post-retirement call.');
+  const couplePostRetirementResults = await api.post('planning/couple-post-retirement', {
+    symbols: "IVV",
+    weights: "1",
+    age: 40,
+    retAge: 65,
+    gender: "M",
+    cpp: 10000,
+    cppAge: 65,
+    oas: 8000,
+    oasAge: 65,
+    wage: 0,
+    age2: 35,
+    retAge2: 65,
+    gender2: "F",
+    cpp2: 9000,
+    cppAge2: 65,
+    oas2: 7000,
+    oasAge2: 65,
+    wage2: 0,
+    exp: 80000
   });
-  console.log('RESULT: portfolio/couple-post-retirement', await couplePostRetirementResults.json());
+  console.log('RESULT: planning/couple-post-retirement', await couplePostRetirementResults.json());
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/pre-retirement call.');
-  const preRetirementResults = await api.post('portfolio/pre-retirement', {
-    init: 5000, 
-    targ: 18000, 
-    symbols: "ACWV,FXM:CA,IVV,QQQ,XFN:CA,XIT:CA,CGL:CA", 
-    weights: "0.20,0.10,0.20,0.10,0.10,0.10,0.20", 
-    region: "CA", 
-    horz: 10
+  console.log('Performing planning/pre-retirement call.');
+  const preRetirementResults = await api.post('planning/pre-retirement', {
+    init: 10000,
+    targ: 1000000,
+    symbols: "IVV",
+    weights: "1",
+    horz: 25
   });
-  console.log('RESULT: portfolio/pre-retirement', await preRetirementResults.json());
+  console.log('RESULT: planning/pre-retirement', await preRetirementResults.json());
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/longevity call.');
-  const longevityResults = await api.post('portfolio/longevity', {
-    region: "CA",
-    init_date: "2007-04-01",
-    end_date: "2018-01-31",
-    symbols: "ACWV,FXM:CA,IVV,QQQ,XFN:CA,XIT:CA,CGL:CA",
-    weights: "0.20,0.10,0.20,0.10,0.10,0.10,0.20",
+  console.log('Performing planning/longevity call.');
+  const longevityResults = await api.post('planning/longevity', {
+    symbols: "IVV",
+    weights: "1",
     retAge: 65,
     gender: "M",
     cf: 50000,
-    init: 700000,
-    inf: 0.02,
-    lifeExp: 25
+    init: 700000
   });
-  console.log('RESULT: portfolio/longevity', await longevityResults.json());
+  console.log('RESULT: planning/longevity', await longevityResults.json());
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/cpp-estimator call.');
-  const cppEstimatorResults = await api.post('portfolio/cpp-estimator', {
+  console.log('Performing planning/cpp-estimator call.');
+  const cppEstimatorResults = await api.post('planning/cpp-estimator', {
     start_cpp_age: "65",
     years_contrib: "40",
     primary_caregiver: true,
@@ -212,18 +152,18 @@ async function run() {
     is_earning_over_average: false,
     perc_under_average: 20
   });
-  console.log('RESULT: portfolio/cpp-estimator', await cppEstimatorResults.json());
+  console.log('RESULT: planning/cpp-estimator', await cppEstimatorResults.json());
 
   // Wait 2 seconds before next API call
   await waitMs(2000);
 
-  console.log('Performing portfolio/oas-estimator call.');
-  const oasEstimatorResults = await api.post('portfolio/oas-estimator', {
+  console.log('Performing planning/oas-estimator call.');
+  const oasEstimatorResults = await api.post('planning/oas-estimator', {
     is_resident_10: true,
     resident_years: "30",
     start_age: "65"
   });
-  console.log('RESULT: portfolio/oas-estimator', await oasEstimatorResults.json());
+  console.log('RESULT: planning/oas-estimator', await oasEstimatorResults.json());
 }
 
 run();
@@ -232,7 +172,7 @@ run();
 
 /**
  * Sleep function to throttle calls to the API
- * @param {Promise} timeMs 
+ * @param {Promise} timeMs
  */
 function waitMs(timeMs) {
   console.log('Sleeping for ' + timeMs + ' milliseconds.');

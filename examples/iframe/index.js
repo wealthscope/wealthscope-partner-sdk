@@ -1,7 +1,7 @@
 import { WealthscopeSdk } from '../src/index.js';
 import db from './database';
 
-const DEFAULT_FRONTEND_URL = 'https://staging-bus.wealthscope.ca';
+const DEFAULT_FRONTEND_URL = 'https://bus.wealthscope.ca';
 
 function setAlert(message, el = $('#error')) {
   el.html(message);
