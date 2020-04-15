@@ -2,6 +2,7 @@ const {version} = require('../package.json');
 const urlJoin = require('url-join');
 
 const SDK_READY = 'SDK_READY';
+const WS_UI_LOADED = 'WS_UI_LOADED';
 
 import {iframeResizer} from 'iframe-resizer';
 
@@ -23,7 +24,7 @@ export class WealthscopeSdk {
     this.opts = Object.assign(
         {
         // place defaults here
-          wealthscopeUrl: 'https://bus.wealthscope.ca',
+          wealthscopeUrl: 'https://staging-bus.wealthscope.ca',
           width: '100%',
           scrolling: 'no',
           id: 'wealthscope',
@@ -49,8 +50,6 @@ export class WealthscopeSdk {
 
       this.iframe = iframe;
 
-      iframeResizer({log: false}, this.iframe);
-
       if (!this.isInit) {
         window.addEventListener('message', (msg) => {
           const {data} = msg;
@@ -59,6 +58,14 @@ export class WealthscopeSdk {
           if (type === SDK_READY) {
             this.isReady = true;
             return resolve();
+          }
+
+          if (type === WS_UI_LOADED) {
+            const event =
+              new CustomEvent('wealthscope_ui_load',
+                  {detail: true}
+              );
+            window.parent.document.dispatchEvent(event);
           }
         });
 
@@ -120,6 +127,9 @@ export class WealthscopeSdk {
     if (this.isReady) {
       // Dequeue the queue if the iFrame is ready
       const {contentWindow} = this.iframe;
+
+      this.iframe.onload = iframeResizer({log: false}, this.iframe);
+
       while (this.msgQueue.length > 0) {
         const message = this.msgQueue.shift();
         contentWindow.postMessage(message, this.opts.wealthscopeUrl);

@@ -1,7 +1,7 @@
-import { WealthscopeSdk } from '../src/index.js';
+import { WealthscopeSdk } from '../../src/index.js';
 import db from './database';
 
-const DEFAULT_FRONTEND_URL = 'https://bus.wealthscope.ca';
+const DEFAULT_FRONTEND_URL = 'https://staging-bus.wealthscope.ca';
 
 function setAlert(message, el = $('#error')) {
   el.html(message);
@@ -214,6 +214,12 @@ async function initialize() {
   if (storedJWT) {
     try {
       await login(storedJWT);
+
+      window.document.addEventListener('wealthscope_ui_load', handleEvent, false);
+
+      function handleEvent(e) {
+        console.log(e.detail);
+      }
     } catch (e) {
       console.error(e);
       setAlert(e.message || e, $('#error'));
