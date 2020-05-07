@@ -111,6 +111,7 @@ An authentication error will be thrown if login fails.
     * securities listed on NEO ATS (NEO-N) should end with `:AQN`
     * securities listed on NEO-L should end with `:AQL`
     * securities listed on Alpha Exchange should end with `:APH`
+4. For Canadian mutual funds, the fund code should end with `:CA` (e.g., `RBF460:CA` for RBC Select Balanced Portfolio Series A)
 
 # Wealthscope Client API
 
