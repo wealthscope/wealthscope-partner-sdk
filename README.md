@@ -80,7 +80,7 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
                     "quantity": 2, // The number of shares of the holding
                     "market_value": 3394.35, // The market value in CAD of the holding
                     "name":"Alphabet Inc Class C", // The name of the holding
-                    "security_type":"Stock" // One of the following: Stock, Fixed Income, Mutual Fund, ETF, Other
+                    "security_type":"Stock" // One of the following: Stock, Mutual Fund, ETF (Other types are not supported by Wealthscope)
                 },
                 {
                     "ticker": "BNS:CA",
@@ -104,7 +104,7 @@ If authentication is successful, the main application will load inside the iFram
 An authentication error will be thrown if login fails.
 
 **Important Remarks**
-1. All dollar values must be denominated in CAD.
+1. All dollar values must be denominated in CAD and have at most 2 decimal places.
 2. Supported types of securites are Canadan and U.S. stocks, Canadian and U.S. ETF's, and Canadian mutual funds.
 3. Ticker symbols for the U.S. listed securties should be entered as is, without any exchange suffix. For Canadian listed securities, the following exchange suffix should be appended to the ticker symbols:
     * securities listed on TSX should end with `:CA`
