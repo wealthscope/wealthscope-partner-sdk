@@ -11,7 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "jsrsasign": "^8.0.12"
   },
   "devDependencies": {
