@@ -46,6 +46,7 @@ export class WealthscopeSdk {
       iframe.src = this.opts.wealthscopeUrl;
       iframe.width = this.opts.width;
       iframe.height = this.opts.height;
+      iframe.allow = 'clipboard-read; clipboard-write';
       element.appendChild(iframe);
 
       this.iframe = iframe;
