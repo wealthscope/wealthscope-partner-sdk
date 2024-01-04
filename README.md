@@ -15,7 +15,7 @@ If you are using Yarn, you can instead do `yarn add wealthscope-partner-sdk`
 1. The client must be able to generate and retrieve a RS512 JWT token.
 1. The client must support the latest web browsers, and have JavaScript enabled.
 1. The client must possess a partner name. Speak to your Wealthscope contact for more information.
-1. The client must have shared a RSA SHA-512 public key with Wealthscope. Speak to your Wealthscope contact for more information.
+1. The client must have a RSA SHA-512 private key shared by Wealthscope. Speak to your Wealthscope contact for more information.
 
 # Wealthscope SDK Documentation
 
@@ -97,7 +97,7 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
 }
 ```
 
-The JWT token will be verified on Wealthscope's API. Authentication will be performed based on verification of the JWT via the RSA SHA-512 public key shared by the client with Wealthscope during the registration process.
+The JWT token will be verified on Wealthscope's API. Authentication will be performed based on verification of the JWT via the RSA SHA-512 public key during the registration process.
 
 If authentication is successful, the main application will load inside the iFrame.
 
