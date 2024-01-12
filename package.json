@@ -31,6 +31,6 @@
     "nodemon": "^1.18.7",
     "requirejs": "^2.3.6",
     "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.3.12"
   }
 }
