@@ -71,9 +71,10 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
     "accounts": [
         {
             "institution": "ABC Brokers", // The broker or institution the account is with
-            "label":"123412341234-Margin", // The account's identifier
-            "balance":6086.35, // The balance in CAD of the account
-            "cash":1000, // The amount of cash in CAD in the account
+            "name":"123412341234-Margin", // The account's identifier
+            "balance":6086.35, // The balance the account
+            "cash":1000, // The amount of cash in the account
+            "currency": "CAD", // One of "CAD" and "USD", indicating the denomination for account balance, cash, and holdings' market values
             "holdings": [
                 {
                     "ticker": "GOOG", // Ticker symbol of the holding, also see important remarks below
@@ -104,7 +105,7 @@ If authentication is successful, the main application will load inside the iFram
 An authentication error will be thrown if login fails.
 
 **Important Remarks**
-1. All dollar values must be denominated in CAD and have at most 2 decimal places.
+1. All dollar values must have at most 2 decimal places.
 2. Supported types of securites are Canadan and U.S. stocks, Canadian and U.S. ETF's, and Canadian mutual funds.
 3. Ticker symbols for the U.S. listed securties should be entered as is, without any exchange suffix. For Canadian listed securities, the following exchange suffix should be appended to the ticker symbols:
     * securities listed on TSX should end with `:CA`
