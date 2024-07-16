@@ -68,6 +68,7 @@ The `ws.login()` function accepts user data in the format of a RS512 JWT with th
 {
     "partner_name": "a unique identifier representing your company",
     "user_id": "a unique identifier for your user",
+    "language": "en", // Indicate the language (en or fr) to be used in the iFrame
     "accounts": [
         {
             "institution": "ABC Brokers", // The broker or institution the account is with
