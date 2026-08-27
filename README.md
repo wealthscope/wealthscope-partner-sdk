@@ -110,9 +110,7 @@ An authentication error will be thrown if login fails.
 2. Supported types of securites are Canadan and U.S. stocks, Canadian and U.S. ETF's, and Canadian mutual funds.
 3. Ticker symbols for the U.S. listed securties should be entered as is, without any exchange suffix. For Canadian listed securities, the following exchange suffix should be appended to the ticker symbols:
     * securities listed on TSX should end with `:CA`
-    * securities listed on NEO ATS (NEO-N) should end with `:AQN`
-    * securities listed on NEO-L should end with `:AQL`
-    * securities listed on Alpha Exchange should end with `:APH`
+    * securities listed on Cboe Canada (NEO-L) should end with `:AQL`
 4. For Canadian mutual funds, the fund code should end with `:CA` (e.g., `RBF460:CA` for RBC Select Balanced Portfolio Series A)
 
 # Wealthscope Client API
